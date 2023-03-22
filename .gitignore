@@ -158,7 +158,4 @@ cython_debug/
 
 # End of https://www.toptal.com/developers/gitignore/api/python
 
-/env.bat
-/test.py
-
-build.bat
+/tests

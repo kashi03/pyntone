@@ -1,4 +1,4 @@
-from typing import TypedDict, Union, Optional
+from typing import TypedDict, Union, Optional, Literal
 from pyntone.types import RecordID, Revision
 
 class RecordItem(TypedDict):
@@ -10,12 +10,30 @@ class UpdateKey(TypedDict):
     field: str
     value: str
 
-class UpdateRecordForParameter(TypedDict):
+class UpdateRecordForParameter(TypedDict, total=False):
     id: RecordID
-    record: Optional[RecordForParameter]
-    revision: Optional[Revision]
+    record: RecordForParameter
+    revision: Revision
 
-class UpdateKeyRecordForParameter(TypedDict):
+class UpdateKeyRecordForParameter(TypedDict, total=False):
     updateKey: UpdateKey
-    record: Optional[RecordForParameter]
-    revision: Optional[Revision]
+    record: RecordForParameter
+    revision: Revision
+
+class DeleteRecordParameter(TypedDict, total=False):
+    id: RecordID
+    revision: Revision
+
+class Mention(TypedDict):
+    code: str
+    type: Literal['USER', 'GROUP', 'ORGANIZATION']
+
+class Comment(TypedDict, total=False):
+    text: str
+    mentions: list[Mention]
+
+class UpdateRecordStatusParameter(TypedDict, total=False):
+    action: str
+    assignee: str
+    id: RecordID
+    revision: Revision

@@ -1,4 +1,3 @@
-import json
 from typing import Any
 
 import requests
@@ -7,10 +6,13 @@ from pyntone.kintone_request_config_builder import (
 
 
 class KintoneError(Exception):
-    def __init__(self, *args: object) -> None:
-        super().__init__(*args)
+    def __init__(self, message, text, json, status_code) -> None:
+        self.text = text
+        self.json = json
+        self.status_code = status_code
+        super().__init__(message)
 
-class HttpClent():
+class HttpClent:
     def __init__(self, config_builder: KintoneRequestConfigBuilder) -> None:
         self.config_builder = config_builder
     
@@ -36,5 +38,6 @@ class HttpClent():
         return r.json()
 
     def _is_success(self, response: requests.Response) -> None:
-        if response.status_code != 200:
-            raise KintoneError(response.text)
+        if not (200 <= response.status_code < 300):
+            json = response.json()
+            raise KintoneError(json['message'], response.text, json, response.status_code)

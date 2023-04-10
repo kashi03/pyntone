@@ -155,15 +155,34 @@ class RecordClient:
         order_by: Optional[str] = None,
         with_cursor: bool = True
     ):
-        raise NotImplementedError()
+        if with_cursor:
+            condition_query = f'{condition} ' if condition is not None else ''
+            order_by_query = f'order by {order_by}' if order_by is not None else ''
+            query = f'{condition_query}{order_by_query}'
+            query = None if query == '' else query
+            return self.get_all_records_with_cursor(app, fields, query)
+        if order_by is None:
+            return self.get_all_records_with_id(app, fields, condition)
+        return self.get_all_records_with_offset(app, fields, condition, order_by)
     
-    def get_all_records_with_id(self):
+    def get_all_records_with_id(
+        self,
+        app: AppID,
+        fields: Optional[list[str]] = None,
+        condition: Optional[str] = None
+    ):
         raise NotImplementedError()
 
     def __get_all_records_recursive_with_id(self):
         raise NotImplementedError()
     
-    def get_all_records_with_offset(self):
+    def get_all_records_with_offset(
+        self,
+        app: AppID,
+        fields: Optional[list[str]] = None,
+        condition: Optional[str] = None,
+        order_by: Optional[str] = None,
+    ):
         raise NotImplementedError()
 
     def __get_all_records_recursive_with_offset(self):

@@ -8,7 +8,7 @@ RecordForParameter = dict[str, RecordItem]
 
 class UpdateKey(TypedDict):
     field: str
-    value: str
+    value: Union[int, str]
 
 class UpdateRecordForParameter(TypedDict, total=False):
     id: RecordID

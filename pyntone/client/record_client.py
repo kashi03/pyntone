@@ -64,7 +64,6 @@ class RecordClient:
         )
         return self.client.put(path, params)
 
-    # TODO
     def upsert_record(
         self,
         app: AppID,
@@ -72,7 +71,23 @@ class RecordClient:
         record: Optional[RecordForParameter] = None,
         revision: Optional[Revision] = None
     ):
-        raise NotImplementedError()
+        query = '{} = "{}"'.format(update_key['field'], update_key['value'])
+        records = self.get_records(app, query=query)['records']
+        if len(records) > 0:
+            if records[0]['$id']['type'] == '__ID__':
+                result = self.update_record(app, update_key=update_key, record=record, revision=revision)
+                return {
+                    'id': records[0]['$id']['value'],
+                    'revision': result['revision']
+                }
+            raise Exception('Missing `$id` in `getRecords` response.')
+        return self.add_record(
+            app,
+            {
+            f"{update_key['field']}": { 'value': update_key['value'] },
+            **({} if record is None else record)
+        }
+        )
 
     def get_records(
         self,

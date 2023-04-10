@@ -59,6 +59,7 @@ class KintoneRequestConfigBuilder():
                 'app': params.app
             }
             if params.id is not None: url_params['id'] = params.id
+            if params.query is not None: url_params['query'] = params.query
             if params.fields is not None:
                 for index, v in enumerate(params.fields):
                     url_params[f'fields[{index}]'] = v

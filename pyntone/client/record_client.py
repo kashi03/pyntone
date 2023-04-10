@@ -14,6 +14,7 @@ from pyntone.url import build_path
 ADD_RECORDS_LIMIT = 100
 UPDATE_RECORDS_LIMIT = 100
 DELETE_RECORDS_LIMIT = 100
+GET_RECORDS_LIMIT = 500
 
 class RecordClient:
     def __init__(
@@ -171,10 +172,29 @@ class RecordClient:
         fields: Optional[list[str]] = None,
         condition: Optional[str] = None
     ):
-        raise NotImplementedError()
+        if fields is not None and len(fields) > 0 and not '$id' in fields:
+            fields.append('$id')
+        return self.__get_all_records_recursive_with_id(app, fields, condition, '0', [])
 
-    def __get_all_records_recursive_with_id(self):
-        raise NotImplementedError()
+    def __get_all_records_recursive_with_id(
+        self,
+        app: AppID,
+        fields: Optional[list[str]],
+        condition: Optional[str],
+        id: str,
+        records: list
+    ):
+        condition_query = f'({condition}) and ' if condition is not None else ''
+        query = f'{condition_query}$id > {id} order by $id asc limit {GET_RECORDS_LIMIT}'
+        result = self.get_records(app, fields, query)
+        all_records = records + result['records']
+        if len(result['records']) < GET_RECORDS_LIMIT:
+            return all_records
+        last_record = result['records'][-1]
+        if last_record['$id']['type'] == '__ID__':
+            last_id = last_record['$id']['value']
+            return self.__get_all_records_recursive_with_id(app, fields, condition, last_id, all_records)
+        raise Exception('Missing `$id` in `getRecords` response.')
     
     def get_all_records_with_offset(
         self,
@@ -183,10 +203,32 @@ class RecordClient:
         condition: Optional[str] = None,
         order_by: Optional[str] = None,
     ):
-        raise NotImplementedError()
+        return self.__get_all_records_recursive_with_offset(app, fields, condition, order_by, 0, [])
 
-    def __get_all_records_recursive_with_offset(self):
-        raise NotImplementedError()
+    def __get_all_records_recursive_with_offset(
+        self,
+        app: AppID,
+        fields: Optional[list[str]],
+        condition: Optional[str],
+        order_by: Optional[str],
+        offset: int,
+        records: list
+    ):
+        condition_query = f'{condition} ' if condition is not None else ''
+        order_by_query = f'order by {order_by} ' if order_by is not None else ''
+        query = f'{condition_query}{order_by_query}limit {GET_RECORDS_LIMIT} offset {offset}'
+        result = self.get_records(app, fields, query)
+        all_records = records + result['records']
+        if len(result['records']) < GET_RECORDS_LIMIT:
+            return all_records
+        return self.__get_all_records_recursive_with_offset(
+            app,
+            fields,
+            condition,
+            order_by,
+            offset + GET_RECORDS_LIMIT,
+            all_records
+        )
 
     def get_all_records_with_cursor(
         self,

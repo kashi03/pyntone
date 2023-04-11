@@ -1,11 +1,9 @@
 import base64
 import json
+from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Optional, Union
 from urllib.parse import urljoin
-from dataclasses import dataclass
-
-from pydantic import BaseModel
 
 from pyntone.types import AppID, CommentID, RecordID, Revision
 from pyntone.types.auth import ApiTokenAuth, DiscriminatedAuth, PasswordAuth
@@ -105,15 +103,11 @@ class KintoneRequestConfigBuilder():
             if params.revisions is not None: payload['revisions'] = params.revisions
             if params.comment is not None: payload['comment'] = params.comment
             if params.record is not None: payload['record'] = params.record
-
             config['data'] = json.dumps(payload)
         else:
             raise RuntimeError()
         
         return config
-
-    def _convert_data(self, data: dict) -> dict:
-        return { key: { 'value': val } for key, val in data.items() }
     
     def _build_headers(self, method: HttpMethod, auth: DiscriminatedAuth) -> dict[str, str]:
         if type(auth) is ApiTokenAuth:
@@ -140,4 +134,4 @@ class KintoneRequestConfigBuilder():
 
             return headers
         else:
-            raise NotImplementedError('未実装')
+            raise NotImplementedError('Unimplemented authentication method. Please use ApiTokenAuth or PasswordAuth.')

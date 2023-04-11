@@ -1,5 +1,7 @@
-from typing import TypedDict, Union, Optional, Literal
+from typing import Literal, TypedDict, Union
+
 from pyntone.types import RecordID, Revision
+
 
 class RecordItem(TypedDict):
     value: Union[int, str]

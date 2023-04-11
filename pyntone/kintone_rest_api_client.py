@@ -1,8 +1,8 @@
 import re
 from typing import Optional, TypedDict, Union
 
-from pyntone.client.record_client import RecordClient
 from pyntone.client.bulk_request_client import BulkRequestClient
+from pyntone.client.record_client import RecordClient
 from pyntone.http.http_client import HttpClent
 from pyntone.kintone_request_config_builder import KintoneRequestConfigBuilder
 from pyntone.types.auth import DiscriminatedAuth

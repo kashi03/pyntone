@@ -1,7 +1,6 @@
+from dataclasses import dataclass
 from typing import Union
 
-# from pydantic import BaseModel
-from dataclasses import dataclass
 
 @dataclass
 class ApiTokenAuth:

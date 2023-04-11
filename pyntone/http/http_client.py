@@ -1,6 +1,7 @@
 from typing import Any
 
 import requests
+
 from pyntone.kintone_request_config_builder import (
     HttpMethod, KintoneRequestConfigBuilder, KintoneRequestParams)
 

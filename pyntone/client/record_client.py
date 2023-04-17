@@ -58,7 +58,7 @@ class RecordClient:
         params = KintoneRequestParams(
             app=app,
             id=record_id,
-            update_key=update_key,
+            updateKey=update_key,
             record=record,
             revision=revision
         )
@@ -101,7 +101,7 @@ class RecordClient:
             app=app,
             fields=fields,
             query=query,
-            total_count=total_count
+            totalCount=total_count
         )
         return self.client.get(path, params)
 

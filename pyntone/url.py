@@ -1,9 +1,10 @@
 from typing import Union
 
+
 def build_path(
     endpoint_name: str,
     guest_space_id: Union[None, int, str] = None,
-    preview: bool = False
+    preview: bool = False,
 ) -> str:
     guest_path = f'/guest/{guest_space_id}' if guest_space_id is not None else ''
     preview_path = '/preview' if preview else ''

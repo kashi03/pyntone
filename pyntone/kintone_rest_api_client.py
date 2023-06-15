@@ -18,18 +18,19 @@ class KintoneRestAPIClient:
         base_url: str,
         auth: DiscriminatedAuth,
         guest_space_id: Union[int, str, None] = None,
-        basic_auth = None,
-        client_cert_auth = None,
-        proxy = None,
-        feature_flags = None,
-        user_agent: Optional[str] = None
+        basic_auth=None,
+        client_cert_auth=None,
+        proxy=None,
+        feature_flags=None,
+        user_agent: Optional[str] = None,
     ) -> None:
         self.__base_url = re.sub('/+$', '', base_url)
-        
-        
-        request_config_builder = KintoneRequestConfigBuilder(auth=auth, base_url=self.__base_url)
+
+        request_config_builder = KintoneRequestConfigBuilder(
+            auth=auth, base_url=self.__base_url
+        )
         httpClient = HttpClent(config_builder=request_config_builder)
-        
+
         self.bulkRequest = BulkRequestClient(httpClient, guest_space_id)
         self.record = RecordClient(httpClient, self.bulkRequest, guest_space_id)
         # self.app = AppClient()

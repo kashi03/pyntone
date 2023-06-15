@@ -3,7 +3,10 @@ from typing import Any
 import requests
 
 from pyntone.kintone_request_config_builder import (
-    HttpMethod, KintoneRequestConfigBuilder, KintoneRequestParams)
+    HttpMethod,
+    KintoneRequestConfigBuilder,
+    KintoneRequestParams,
+)
 
 
 class KintoneError(Exception):
@@ -13,10 +16,11 @@ class KintoneError(Exception):
         self.status_code = status_code
         super().__init__(message)
 
+
 class HttpClent:
     def __init__(self, config_builder: KintoneRequestConfigBuilder) -> None:
         self.config_builder = config_builder
-    
+
     def get(self, path: str, params: KintoneRequestParams) -> dict[str, Any]:
         config = self.config_builder.build(HttpMethod.GET, path, params)
         return self._send_request(config)
@@ -28,11 +32,11 @@ class HttpClent:
     def put(self, path: str, params: KintoneRequestParams) -> dict[str, Any]:
         config = self.config_builder.build(HttpMethod.PUT, path, params)
         return self._send_request(config)
-    
+
     def delete(self, path: str, params: KintoneRequestParams) -> dict[str, Any]:
         config = self.config_builder.build(HttpMethod.DELETE, path, params)
         return self._send_request(config)
-    
+
     def _send_request(self, config: dict[str, Any]) -> dict[str, Any]:
         r = requests.request(**config)
         self._is_success(r)
@@ -41,4 +45,6 @@ class HttpClent:
     def _is_success(self, response: requests.Response) -> None:
         if not (200 <= response.status_code < 300):
             json = response.json()
-            raise KintoneError(json['message'], response.text, json, response.status_code)
+            raise KintoneError(
+                json['message'], response.text, json, response.status_code
+            )

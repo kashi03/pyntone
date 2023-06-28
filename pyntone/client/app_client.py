@@ -1,6 +1,8 @@
-from typing import Literal, Optional, Union
+from typing import Optional, Union
 from pyntone.http.http_client import HttpClent, KintoneRequestParams
 from pyntone.url import build_path
+from pyntone.types import AppID, Revision
+from pyntone.client.types import Lang
 
 
 class AppClient:
@@ -10,35 +12,80 @@ class AppClient:
         self.client = client
         self.guest_space_id = guest_space_id
 
-    def get_form_fields(self):
-        raise NotImplementedError()
+    def get_form_fields(
+        self, app: AppID, lang: Optional[Lang] = None, preview: bool = False
+    ):
+        path = self.__build_path_with_guest_space_id('app/form/fields', preview)
+        params = KintoneRequestParams(app=app, lang=lang)
+        return self.client.get(path, params)
 
-    def add_form_fields(self):
-        raise NotImplementedError()
+    def add_form_fields(
+        self, app: AppID, properties, revision: Optional[Revision] = None
+    ):
+        path = self.__build_path_with_guest_space_id('app/form/fields', True)
+        params = KintoneRequestParams(app=app, properties=properties, revision=revision)
+        return self.client.get(path, params)
 
-    def update_form_fields(self):
-        raise NotImplementedError()
+    def update_form_fields(
+        self, app: AppID, properties, revision: Optional[Revision] = None
+    ):
+        path = self.__build_path_with_guest_space_id('app/form/fields', True)
+        params = KintoneRequestParams(app=app, properties=properties, revision=revision)
+        return self.client.put(path, params)
 
-    def delete_form_fields(self):
-        raise NotImplementedError()
+    def delete_form_fields(
+        self, app: AppID, fields: list[str], revision: Optional[Revision] = None
+    ):
+        path = self.__build_path_with_guest_space_id('app/form/fields', True)
+        params = KintoneRequestParams(app=app, fields=fields, revision=revision)
+        return self.client.delete(path, params)
 
-    def get_form_layout(self):
-        raise NotImplementedError()
+    def get_form_layout(self, app: AppID, preview: bool = False):
+        path = self.__build_path_with_guest_space_id('app/form/layout', preview)
+        params = KintoneRequestParams(app=app)
+        return self.client.get(path, params)
 
-    def update_form_layout(self):
-        raise NotImplementedError()
+    def update_form_layout(
+        self, app: AppID, layout, revision: Optional[Revision] = None
+    ):
+        path = self.__build_path_with_guest_space_id('app/form/layout', True)
+        params = KintoneRequestParams(app=app, layout=layout, revision=revision)
+        return self.client.put(path, params)
 
-    def get_views(self):
-        raise NotImplementedError()
+    def get_views(self, app: AppID, lang: Optional[Lang] = None, preview: bool = False):
+        path = self.__build_path_with_guest_space_id('app/views', preview)
+        params = KintoneRequestParams(app=app, lang=lang)
+        return self.client.get(path, params)
 
-    def update_views(self):
-        raise NotImplementedError()
+    def update_views(self, app: AppID, views, revision: Optional[Revision] = None):
+        path = self.__build_path_with_guest_space_id('app/views', True)
+        params = KintoneRequestParams(app=app, views=views, revision=revision)
+        return self.client.put(path, params)
 
-    def get_app(self):
-        raise NotImplementedError()
+    def get_app(self, id: AppID):
+        path = self.__build_path_with_guest_space_id('app')
+        params = KintoneRequestParams(id=id)
+        return self.client.get(path, params)
 
-    def get_apps(self):
-        raise NotImplementedError()
+    def get_apps(
+        self,
+        ids: Optional[list[AppID]] = None,
+        codes: Optional[list[str]] = None,
+        name: Optional[str] = None,
+        space_ids: Optional[list[Union[int, str]]] = None,
+        limit: Union[int, str, None] = None,
+        offset: Union[int, str, None] = None,
+    ):
+        path = self.__build_path_with_guest_space_id('apps')
+        params = KintoneRequestParams(
+            ids=ids,
+            codes=codes,
+            name=name,
+            space_ids=space_ids,
+            limit=limit,
+            offset=offset,
+        )
+        return self.client.get(path, params)
 
     def add_app(self):
         raise NotImplementedError()

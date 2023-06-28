@@ -2,7 +2,7 @@ import re
 from typing import Optional, TypedDict, Union
 
 from pyntone.client.bulk_request_client import BulkRequestClient
-from pyntone.client.record_client import RecordClient
+from pyntone.client import RecordClient, AppClient
 from pyntone.http.http_client import HttpClent
 from pyntone.kintone_request_config_builder import KintoneRequestConfigBuilder
 from pyntone.types.auth import DiscriminatedAuth
@@ -33,5 +33,5 @@ class KintoneRestAPIClient:
 
         self.bulkRequest = BulkRequestClient(httpClient, guest_space_id)
         self.record = RecordClient(httpClient, self.bulkRequest, guest_space_id)
-        # self.app = AppClient()
+        self.app = AppClient(httpClient, guest_space_id)
         # self.file = FileClient()

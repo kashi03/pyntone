@@ -63,3 +63,107 @@ def test_update_views(client):
 def test_get_app(client):
     result = client.app.get_app(env['APP_ID'])
     assert result.get('appId') is not None
+
+
+def test_add_app(client):
+    pass
+
+
+def test_get_app_settings(client):
+    pass
+
+
+def test_update_app_settings(client):
+    pass
+
+
+def test_get_process_management(client):
+    pass
+
+
+def test_update_process_management(client):
+    pass
+
+
+def test_get_deploy_status(client):
+    pass
+
+
+def test_deploy_app(client):
+    pass
+
+
+def test_get_field_acl(client):
+    pass
+
+
+def test_update_field_acl(client):
+    pass
+
+
+def test_get_app_acl(client):
+    pass
+
+
+def test_update_app_acl(client):
+    pass
+
+
+def test_evaluate_records_acl(client):
+    pass
+
+
+def test_get_record_acl(client):
+    pass
+
+
+def test_update_record_acl(client):
+    pass
+
+
+def test_get_app_customize(client):
+    pass
+
+
+def test_update_app_customize(client):
+    pass
+
+
+def test_get_general_notifications(client):
+    pass
+
+
+def test_update_general_notifications(client):
+    pass
+
+
+def test_get_per_record_notifications(client):
+    pass
+
+
+def test_update_per_record_notifications(client):
+    pass
+
+
+def test_get_reminder_notifications(client):
+    pass
+
+
+def test_update_reminder_notifications(client):
+    pass
+
+
+def test_get_reports(client):
+    pass
+
+
+def test_update_reports(client):
+    pass
+
+
+def test_get_app_actions(client):
+    pass
+
+
+def test_update_app_actions(client):
+    pass

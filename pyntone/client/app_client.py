@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Optional, Union, Literal
 from pyntone.http.http_client import HttpClent, KintoneRequestParams
 from pyntone.url import build_path
 from pyntone.types import AppID, Revision
@@ -90,23 +90,76 @@ class AppClient:
     def add_app(self):
         raise NotImplementedError()
 
-    def get_app_settings(self):
-        raise NotImplementedError()
+    def get_app_settings(
+        self, app: AppID, lang: Optional[Lang] = None, preview: bool = False
+    ):
+        path = self.__build_path_with_guest_space_id('app/settings', preview)
+        params = KintoneRequestParams(app=app, lang=lang)
+        return self.client.get(path, params)
 
-    def update_app_settings(self):
-        raise NotImplementedError()
+    def update_app_settings(
+        self,
+        app: AppID,
+        name: Optional[str] = None,
+        description: Optional[str] = None,
+        icon: Optional[dict] = None,
+        theme: Optional[
+            Literal[
+                'WHITE',
+                'CLIPBOARD',
+                'BINDER',
+                'PENCIL',
+                'CLIPS',
+                'RED',
+                'BLUE',
+                'GREEN',
+                'YELLOW',
+                'BLACK',
+            ]
+        ] = None,
+        revision: Optional[Revision] = None,
+    ):
+        path = self.__build_path_with_guest_space_id('app/settings', True)
+        params = KintoneRequestParams(
+            app=app,
+            name=name,
+            description=description,
+            icon=icon,
+            theme=theme,
+            revision=revision,
+        )
+        return self.client.put(path, params)
 
-    def get_process_management(self):
-        raise NotImplementedError()
+    def get_process_management(
+        self, app: AppID, lang: Optional[Lang] = None, preview: bool = False
+    ):
+        path = self.__build_path_with_guest_space_id('app/status', preview)
+        params = KintoneRequestParams(app=app, lang=lang)
+        return self.client.get(path, params)
 
-    def update_process_management(self):
-        raise NotImplementedError()
+    def update_process_management(
+        self,
+        app: AppID,
+        enable: Optional[bool] = None,
+        states: Optional[dict] = None,
+        actions: Optional[dict] = None,
+        revision: Optional[Revision] = None,
+    ):
+        path = self.__build_path_with_guest_space_id('app/status', True)
+        params = KintoneRequestParams(
+            app=app, enable=enable, states=states, actions=actions, revision=revision
+        )
+        return self.client.put(path, params)
 
-    def get_deploy_status(self):
-        raise NotImplementedError()
+    def get_deploy_status(self, apps: list[AppID]):
+        path = self.__build_path_with_guest_space_id('app/deploy', True)
+        params = KintoneRequestParams(apps=apps)
+        return self.client.get(path, params)
 
-    def deploy_app(self):
-        raise NotImplementedError()
+    def deploy_app(self, apps: list[dict], revert: Optional[bool] = None):
+        path = self.__build_path_with_guest_space_id('app/deploy', True)
+        params = KintoneRequestParams(apps=apps, revert=revert)
+        return self.client.post(path, params)
 
     def get_field_acl(self):
         raise NotImplementedError()

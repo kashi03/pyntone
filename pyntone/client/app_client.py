@@ -1,8 +1,8 @@
 from typing import Optional, Union, Literal
 from pyntone.http.http_client import HttpClent, KintoneRequestParams
 from pyntone.url import build_path
-from pyntone.types import AppID, Revision
-from pyntone.client.types import Lang
+from pyntone.types import AppID, Revision, RecordID
+from pyntone.client.types import Lang, AppCustomizeScope
 
 
 class AppClient:
@@ -161,32 +161,67 @@ class AppClient:
         params = KintoneRequestParams(apps=apps, revert=revert)
         return self.client.post(path, params)
 
-    def get_field_acl(self):
-        raise NotImplementedError()
+    def get_field_acl(self, app: AppID, preview: bool = False):
+        path = self.__build_path_with_guest_space_id('field/acl', preview)
+        params = KintoneRequestParams(app=app)
+        return self.client.get(path, params)
 
-    def update_field_acl(self):
-        raise NotImplementedError()
+    def update_field_acl(
+        self, app: AppID, rights: list, revision: Optional[Revision] = None
+    ):
+        path = self.__build_path_with_guest_space_id('field/acl', True)
+        params = KintoneRequestParams(app=app, rights=rights, revision=revision)
+        return self.client.put(path, params)
 
-    def get_app_acl(self):
-        raise NotImplementedError()
+    def get_app_acl(self, app: AppID, preview: bool = False):
+        path = self.__build_path_with_guest_space_id('app/acl', preview)
+        params = KintoneRequestParams(app=app)
+        return self.client.get(path, params)
 
-    def update_app_acl(self):
-        raise NotImplementedError()
+    def update_app_acl(
+        self, app: AppID, rights: list, revision: Optional[Revision] = None
+    ):
+        path = self.__build_path_with_guest_space_id('app/acl', True)
+        params = KintoneRequestParams(app=app, rights=rights, revision=revision)
+        return self.client.put(path, params)
 
-    def evaluate_records_acl(self):
-        raise NotImplementedError()
+    def evaluate_records_acl(self, app: AppID, ids: list[RecordID]):
+        path = self.__build_path_with_guest_space_id('records/acl/evaluate')
+        params = KintoneRequestParams(app=app, ids=ids)
+        return self.client.get(path, params)
 
-    def get_record_acl(self):
-        raise NotImplementedError()
+    def get_record_acl(
+        self, app: AppID, lang: Optional[Lang] = None, preview: bool = False
+    ):
+        path = self.__build_path_with_guest_space_id('record/acl', preview=preview)
+        params = KintoneRequestParams(app=app, lang=lang)
+        return self.client.get(path, params)
 
-    def update_record_acl(self):
-        raise NotImplementedError()
+    def update_record_acl(
+        self, app: AppID, rights: list, revision: Optional[Revision] = None
+    ):
+        path = self.__build_path_with_guest_space_id('record/acl', True)
+        params = KintoneRequestParams(app=app, rights=rights, revision=revision)
+        return self.client.put(path, params)
 
-    def get_app_customize(self):
-        raise NotImplementedError()
+    def get_app_customize(self, app: AppID, preview: bool = False):
+        path = self.__build_path_with_guest_space_id('app/customize', preview)
+        params = KintoneRequestParams(app=app)
+        return self.client.get(path, params)
 
-    def update_app_customize(self):
-        raise NotImplementedError()
+    def update_app_customize(
+        self,
+        app: AppID,
+        scope: Optional[AppCustomizeScope] = None,
+        desktop: Optional[dict] = None,
+        mobile: Optional[dict] = None,
+        revision: Optional[Revision] = None,
+    ):
+        path = self.__build_path_with_guest_space_id('app/customize', True)
+        params = KintoneRequestParams(
+            app=app, scope=scope, desktop=desktop, mobile=mobile, revision=revision
+        )
+        return self.client.put(path, params)
 
     def get_general_notifications(self):
         raise NotImplementedError()

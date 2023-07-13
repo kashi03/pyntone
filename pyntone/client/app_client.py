@@ -223,35 +223,101 @@ class AppClient:
         )
         return self.client.put(path, params)
 
-    def get_general_notifications(self):
-        raise NotImplementedError()
+    def get_general_notifications(self, app: AppID, preview: bool = False):
+        path = self.__build_path_with_guest_space_id(
+            'app/notifications/general', preview
+        )
+        params = KintoneRequestParams(app=app)
+        return self.client.get(path, params)
 
-    def update_general_notifications(self):
-        raise NotImplementedError()
+    def update_general_notifications(
+        self,
+        app: AppID,
+        notifications: Optional[list] = None,
+        notify_to_commenter: Optional[bool] = None,
+        revision: Optional[Revision] = None,
+    ):
+        path = self.__build_path_with_guest_space_id('app/notifications/general', True)
+        params = KintoneRequestParams(
+            app=app,
+            notifications=notifications,
+            notifyToCommenter=notify_to_commenter,
+            revision=revision,
+        )
+        return self.client.put(path, params)
 
-    def get_per_record_notifications(self):
-        raise NotImplementedError()
+    def get_per_record_notifications(
+        self, app: AppID, lang: Optional[Lang] = None, preview: bool = False
+    ):
+        path = self.__build_path_with_guest_space_id(
+            'app/notifications/perRecord', preview
+        )
+        params = KintoneRequestParams(app=app, lang=lang)
+        return self.client.get(path, params)
 
-    def update_per_record_notifications(self):
-        raise NotImplementedError()
+    def update_per_record_notifications(
+        self,
+        app: AppID,
+        notifications: Optional[list] = None,
+        revision: Optional[Revision] = None,
+    ):
+        path = self.__build_path_with_guest_space_id(
+            'app/notifications/perRecord', True
+        )
+        params = KintoneRequestParams(
+            app=app, notifications=notifications, revision=revision
+        )
+        return self.client.put(path, params)
 
-    def get_reminder_notifications(self):
-        raise NotImplementedError()
+    def get_reminder_notifications(
+        self, app: AppID, lang: Optional[Lang] = None, preview: bool = False
+    ):
+        path = self.__build_path_with_guest_space_id(
+            'app/notifications/reminder', preview
+        )
+        params = KintoneRequestParams(app=app, lang=lang)
+        return self.client.get(path, params)
 
-    def update_reminder_notifications(self):
-        raise NotImplementedError()
+    def update_reminder_notifications(
+        self,
+        app: AppID,
+        notifications: Optional[list] = None,
+        timezone: Optional[str] = None,
+        revision: Optional[Revision] = None,
+    ):
+        path = self.__build_path_with_guest_space_id('app/notifications/reminder', True)
+        params = KintoneRequestParams(
+            app=app, notifications=notifications, timezone=timezone, revision=revision
+        )
+        return self.client.put(path, params)
 
-    def get_reports(self):
-        raise NotImplementedError()
+    def get_reports(
+        self, app: AppID, lang: Optional[Lang] = None, preview: bool = False
+    ):
+        path = self.__build_path_with_guest_space_id('app/reports', preview)
+        params = KintoneRequestParams(app=app, lang=lang)
+        return self.client.get(path, params)
 
-    def update_reports(self):
-        raise NotImplementedError()
+    def update_reports(
+        self, app: AppID, reports: dict, revision: Optional[Revision] = None
+    ):
+        path = self.__build_path_with_guest_space_id('app/reports', True)
+        params = KintoneRequestParams(app=app, reports=reports, revision=revision)
+        return self.client.put(path, params)
 
-    def get_app_actions(self):
-        raise NotImplementedError()
+    def get_app_actions(
+        self, app: AppID, lang: Optional[Lang] = None, preview: bool = False
+    ):
+        path = self.__build_path_with_guest_space_id('app/actions', preview)
+        params = KintoneRequestParams(app=app, lang=lang)
+        return self.client.get(path, params)
 
-    def update_app_actions(self):
-        raise NotImplementedError()
+    def update_app_actions(
+        self, app: AppID, actions: dict, revision: Optional[Revision] = None
+    ):
+        path = self.__build_path_with_guest_space_id('app/actions', True)
+        params = KintoneRequestParams(app=app, actions=actions, revision=revision)
+        return self.client.put(path, params)
 
     def __build_path_with_guest_space_id(
         self, endpoint_name: str, preview: bool = False

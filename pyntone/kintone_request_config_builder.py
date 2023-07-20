@@ -1,6 +1,7 @@
 import base64
 import json
 from enum import Enum
+from typing import Union
 from urllib.parse import urljoin
 
 from pyntone.types.auth import ApiTokenAuth, DiscriminatedAuth, PasswordAuth
@@ -42,55 +43,82 @@ class KintoneRequestParams:
         return {key: value for key, value in self.params.items()}
 
 
+class KintoneRequestFormData:
+    def __init__(self, name, data, content_type) -> None:
+        self.name = name
+        self.data = data
+        self.content_type = content_type
+
+    def build(self):
+        if self.content_type is None:
+            form_data = (self.name, self.data)
+        else:
+            form_data = (self.name, self.data, self.content_type)
+        return {'file': form_data}
+
+
 class KintoneRequestConfigBuilder:
     def __init__(self, auth: DiscriminatedAuth, base_url: str) -> None:
         self.auth = auth
         self.base_url = base_url
 
     def build(
-        self, method: HttpMethod, path: str, params: KintoneRequestParams
+        self,
+        method: HttpMethod,
+        path: str,
+        params: Union[KintoneRequestParams, KintoneRequestFormData],
     ) -> dict:
         config = {
             'method': method.value,
             'url': urljoin(self.base_url, path),
-            'headers': self.__build_headers(method, self.auth),
+            'headers': self.__build_headers(method, self.auth, params),
         }
-        if method == HttpMethod.GET:
-            url_params = params.build_url_params()
-            config['params'] = url_params
-        elif method == HttpMethod.POST:
-            payload = params.build_payload()
-            config['data'] = json.dumps(payload)
-        elif method == HttpMethod.PUT:
-            payload = params.build_payload()
-            config['data'] = json.dumps(payload)
-        elif method == HttpMethod.DELETE:
-            payload = params.build_payload()
-            config['data'] = json.dumps(payload)
-        else:
-            raise NotImplementedError('Unimplemented method.')
+        if type(params) is KintoneRequestParams:
+            if method == HttpMethod.GET:
+                url_params = params.build_url_params()
+                config['params'] = url_params
+            elif method == HttpMethod.POST:
+                payload = params.build_payload()
+                config['data'] = json.dumps(payload)
+            elif method == HttpMethod.PUT:
+                payload = params.build_payload()
+                config['data'] = json.dumps(payload)
+            elif method == HttpMethod.DELETE:
+                payload = params.build_payload()
+                config['data'] = json.dumps(payload)
+            else:
+                raise NotImplementedError('Unimplemented method.')
+        elif type(params) is KintoneRequestFormData:
+            if method == HttpMethod.GET:
+                pass
+            elif method == HttpMethod.POST:
+                file = params.build()
+                config['files'] = file
+            else:
+                raise NotImplementedError('Unimplemented method.')
         return config
 
     def __build_headers(
-        self, method: HttpMethod, auth: DiscriminatedAuth
+        self,
+        method: HttpMethod,
+        auth: DiscriminatedAuth,
+        params: Union[KintoneRequestParams, KintoneRequestFormData],
     ) -> dict[str, str]:
+        headers = {}
+        if type(params) is KintoneRequestParams and method != HttpMethod.GET:
+            headers['Content-Type'] = 'application/json'
+
         if type(auth) is ApiTokenAuth:
             api_token = auth.api_token
             if type(api_token) is not str:
                 api_token = ','.join(api_token)
-            headers = {'X-Cybozu-API-Token': api_token}
-            if method != HttpMethod.GET:
-                headers['Content-Type'] = 'application/json'
+            headers['X-Cybozu-API-Token'] = api_token
             return headers
         elif type(auth) is PasswordAuth:
             password = auth.password
             user_name = auth.user_name
             b64_pass = base64.b64encode(f'{user_name}:{password}'.encode()).decode()
-            headers = {
-                'X-Cybozu-Authorization': b64_pass,
-            }
-            if method != HttpMethod.GET:
-                headers['Content-Type'] = 'application/json'
+            headers['X-Cybozu-Authorization'] = b64_pass
             return headers
         else:
             raise NotImplementedError(

@@ -18,11 +18,12 @@ class KintoneRestAPIClient:
         base_url: str,
         auth: DiscriminatedAuth,
         guest_space_id: Union[int, str, None] = None,
-        basic_auth=None,
-        client_cert_auth=None,
-        proxy=None,
-        feature_flags=None,
-        user_agent: Optional[str] = None,
+        # TODO
+        # basic_auth=None,
+        # client_cert_auth=None,
+        # proxy=None,
+        # feature_flags=None,
+        # user_agent: Optional[str] = None,
     ) -> None:
         self.__base_url = re.sub('/+$', '', base_url)
 

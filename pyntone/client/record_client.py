@@ -157,7 +157,7 @@ class RecordClient:
         fields: Optional[list[str]] = None,
         condition: Optional[str] = None,
         order_by: Optional[str] = None,
-        with_cursor: bool = True,
+        with_cursor: bool = False,
     ):
         if with_cursor:
             condition_query = f'{condition} ' if condition is not None else ''
